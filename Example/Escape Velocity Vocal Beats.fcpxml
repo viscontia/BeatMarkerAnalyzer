@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE fcpxml>
+<fcpxml version="1.10">
+  <resources>
+    <format id="BMXRefTimelineFormat" name="FFVideoFormat1080p25" frameDuration="1000/25000s" width="1920" height="1080" colorSpace="1-1-1 (Rec. 709)" />
+    <asset id="ASSET_BMXRefBetmarkedClip" name="Escape Velocity Vocal Based.wav" start="0/1s" duration="1527/25s" hasAudio="1" audioSources="1" audioRate="48000">
+      <media-rep kind="original-media" src="Escape Velocity Vocal Based.wav" />
+    </asset>
+  </resources>
+  <library>
+    <event name="Beat Analysis - Escape Velocity Vocal Based.wav">
+      <asset-clip ref="ASSET_BMXRefBetmarkedClip" name="Escape Velocity Vocal Based.wav" duration="1527/25s" audioRole="music" format="BMXRefTimelineFormat">
+        <marker start="10/25s" duration="1/48000s" value="!Beat 1 (200% - Alta Confidenza)" />
+        <marker start="39/25s" duration="1/48000s" value="!Beat 2 (120% - 4° Beat)" />
+        <marker start="47/25s" duration="1/48000s" value="!Beat 3 (120% - 4° Beat)" />
+        <marker start="71/25s" duration="1/48000s" value="!Beat 4 (120% - 4° Beat)" />
+        <marker start="79/25s" duration="1/48000s" value="!Beat 5 (120% - 4° Beat)" />
+        <marker start="105/25s" duration="1/48000s" value="!Beat 6 (120% - 4° Beat)" />
+        <marker start="113/25s" duration="1/48000s" value="!Beat 7 (120% - 4° Beat)" />
+        <marker start="162/25s" duration="1/48000s" value="!Beat 8 (120% - 4° Beat)" />
+        <marker start="170/25s" duration="1/48000s" value="!Beat 9 (120% - 4° Beat)" />
+        <marker start="206/25s" duration="1/48000s" value="!Beat 10 (120% - 4° Beat)" />
+        <marker start="216/25s" duration="1/48000s" value="!Beat 11 (120% - 4° Beat)" />
+        <marker start="268/25s" duration="1/48000s" value="!Beat 12 (120% - 4° Beat)" />
+        <marker start="276/25s" duration="1/48000s" value="!Beat 13 (120% - 4° Beat)" />
+        <marker start="321/25s" duration="1/48000s" value="!Beat 14 (120% - 4° Beat)" />
+        <marker start="346/25s" duration="1/48000s" value="!Beat 15 (120% - 4° Beat)" />
+        <marker start="378/25s" duration="1/48000s" value="!Beat 16 (120% - 4° Beat)" />
+        <marker start="387/25s" duration="1/48000s" value="!Beat 17 (120% - 4° Beat)" />
+        <marker start="418/25s" duration="1/48000s" value="!Beat 18 (120% - Downbeat)" />
+        <marker start="428/25s" duration="1/48000s" value="!Beat 19 (120% - 4° Beat)" />
+        <marker start="480/25s" duration="1/48000s" value="!Beat 20 (120% - 4° Beat)" />
+        <marker start="488/25s" duration="1/48000s" value="!Beat 21 (120% - 4° Beat)" />
+        <marker start="528/25s" duration="1/48000s" value="!Beat 22 (120% - Downbeat)" />
+        <marker start="537/25s" duration="1/48000s" value="!Beat 23 (120% - 4° Beat)" />
+        <marker start="572/25s" duration="1/48000s" value="!Beat 24 (120% - Downbeat)" />
+        <marker start="585/25s" duration="1/48000s" value="!Beat 25 (120% - 4° Beat)" />
+        <marker start="629/25s" duration="1/48000s" value="!Beat 26 (120% - 4° Beat)" />
+        <marker start="643/25s" duration="1/48000s" value="!Beat 27 (120% - 4° Beat)" />
+        <marker start="689/25s" duration="1/48000s" value="!Beat 28 (120% - 4° Beat)" />
+        <marker start="700/25s" duration="1/48000s" value="!Beat 29 (120% - 4° Beat)" />
+        <marker start="739/25s" duration="1/48000s" value="!Beat 30 (120% - 4° Beat)" />
+        <marker start="748/25s" duration="1/48000s" value="!Beat 31 (120% - Downbeat)" />
+        <marker start="784/25s" duration="1/48000s" value="!Beat 32 (120% - 4° Beat)" />
+        <marker start="801/25s" duration="1/48000s" value="!Beat 33 (120% - 4° Beat)" />
+        <marker start="841/25s" duration="1/48000s" value="!Beat 34 (120% - 4° Beat)" />
+        <marker start="854/25s" duration="1/48000s" value="!Beat 35 (120% - 4° Beat)" />
+        <marker start="890/25s" duration="1/48000s" value="!Beat 36 (120% - 4° Beat)" />
+        <marker start="904/25s" duration="1/48000s" value="!Beat 37 (120% - 4° Beat)" />
+        <marker start="943/25s" duration="1/48000s" value="!Beat 38 (120% - 4° Beat)" />
+        <marker start="951/25s" duration="1/48000s" value="!Beat 39 (120% - 4° Beat)" />
+        <marker start="982/25s" duration="1/48000s" value="!Beat 40 (120% - 4° Beat)" />
+        <marker start="995/25s" duration="1/48000s" value="!Beat 41 (120% - 4° Beat)" />
+        <marker start="1031/25s" duration="1/48000s" value="!Beat 42 (120% - 4° Beat)" />
+        <marker start="1044/25s" duration="1/48000s" value="!Beat 43 (120% - Downbeat)" />
+        <marker start="1079/25s" duration="1/48000s" value="!Beat 44 (120% - 4° Beat)" />
+        <marker start="1097/25s" duration="1/48000s" value="!Beat 45 (120% - 4° Beat)" />
+        <marker start="1137/25s" duration="1/48000s" value="!Beat 46 (120% - 4° Beat)" />
+        <marker start="1150/25s" duration="1/48000s" value="!Beat 47 (120% - 4° Beat)" />
+        <marker start="1185/25s" duration="1/48000s" value="!Beat 48 (120% - 4° Beat)" />
+        <marker start="1194/25s" duration="1/48000s" value="!Beat 49 (120% - 4° Beat)" />
+        <marker start="1239/25s" duration="1/48000s" value="!Beat 50 (120% - 4° Beat)" />
+        <marker start="1253/25s" duration="1/48000s" value="!Beat 51 (120% - 4° Beat)" />
+        <marker start="1278/25s" duration="1/48000s" value="!Beat 52 (120% - 4° Beat)" />
+        <marker start="1291/25s" duration="1/48000s" value="!Beat 53 (120% - 4° Beat)" />
+        <marker start="1444/25s" duration="1/48000s" value="!Beat 54 (120% - 4° Beat)" />
+        <marker start="1485/25s" duration="1/48000s" value="!Beat 55 (120% - Downbeat)" />
+        <marker start="23/25s" duration="1/48000s" value="Beat 56 (57%)" />
+        <marker start="1207/25s" duration="1/48000s" value="!Beat 57 (54% - 4° Beat)" />
+        <marker start="925/25s" duration="1/48000s" value="Beat 58 (51%)" />
+        <marker start="501/25s" duration="1/48000s" value="!Beat 59 (51% - 4° Beat)" />
+        <marker start="674/25s" duration="1/48000s" value="Beat 60 (51%)" />
+        <marker start="559/25s" duration="1/48000s" value="!Beat 61 (50% - 4° Beat)" />
+        <marker start="1009/25s" duration="1/48000s" value="!Beat 62 (50% - 4° Beat)" />
+        <marker start="1057/25s" duration="1/48000s" value="Beat 63 (50%)" />
+        <marker start="973/25s" duration="1/48000s" value="Beat 64 (50%)" />
+        <marker start="87/25s" duration="1/48000s" value="!Beat 65 (50% - Downbeat)" />
+        <marker start="1221/25s" duration="1/48000s" value="!Beat 66 (49% - Downbeat)" />
+        <marker start="95/25s" duration="1/48000s" value="!Beat 67 (48% - 4° Beat)" />
+        <marker start="290/25s" duration="1/48000s" value="Beat 68 (48%)" />
+        <marker start="1305/25s" duration="1/48000s" value="!Beat 69 (48% - 4° Beat)" />
+        <marker start="1023/25s" duration="1/48000s" value="!Beat 70 (46% - Downbeat)" />
+        <marker start="409/25s" duration="1/48000s" value="Beat 71 (46%)" />
+        <marker start="547/25s" duration="1/48000s" value="!Beat 72 (45% - 4° Beat)" />
+        <marker start="63/25s" duration="1/48000s" value="!Beat 73 (45% - 4° Beat)" />
+        <marker start="816/25s" duration="1/48000s" value="Beat 74 (45%)" />
+        <marker start="254/25s" duration="1/48000s" value="Beat 75 (45%)" />
+        <marker start="882/25s" duration="1/48000s" value="Beat 76 (43%)" />
+        <marker start="710/25s" duration="1/48000s" value="Beat 77 (42%)" />
+        <marker start="763/25s" duration="1/48000s" value="Beat 78 (42%)" />
+        <marker start="179/25s" duration="1/48000s" value="Beat 79 (42%)" />
+        <marker start="603/25s" duration="1/48000s" value="Beat 80 (41%)" />
+        <marker start="960/25s" duration="1/48000s" value="Beat 81 (41%)" />
+        <marker start="1159/25s" duration="1/48000s" value="Beat 82 (40%)" />
+        <marker start="594/25s" duration="1/48000s" value="!Beat 83 (40% - Downbeat)" />
+        <marker start="395/25s" duration="1/48000s" value="!Beat 84 (39% - Downbeat)" />
+        <marker start="154/25s" duration="1/48000s" value="!Beat 85 (39% - Downbeat)" />
+        <marker start="1123/25s" duration="1/48000s" value="Beat 86 (39%)" />
+        <marker start="55/25s" duration="1/48000s" value="!Beat 87 (39% - Downbeat)" />
+        <marker start="1066/25s" duration="1/48000s" value="Beat 88 (38%)" />
+        <marker start="726/25s" duration="1/48000s" value="!Beat 89 (38% - Downbeat)" />
+        <marker start="913/25s" duration="1/48000s" value="!Beat 90 (38% - Downbeat)" />
+        <marker start="1168/25s" duration="1/48000s" value="Beat 91 (37%)" />
+        <marker start="832/25s" duration="1/48000s" value="!Beat 92 (36% - 4° Beat)" />
+        <marker start="361/25s" duration="1/48000s" value="Beat 93 (36%)" />
+        <marker start="444/25s" duration="1/48000s" value="Beat 94 (35%)" />
+        <marker start="1313/25s" duration="1/48000s" value="Beat 95 (35%)" />
+        <marker start="1269/25s" duration="1/48000s" value="Beat 96 (35%)" />
+        <marker start="771/25s" duration="1/48000s" value="!Beat 97 (34% - Downbeat)" />
+        <marker start="353/25s" duration="1/48000s" value="Beat 98 (33%)" />
+        <marker start="1261/25s" duration="1/48000s" value="!Beat 99 (32% - 4° Beat)" />
+        <marker start="872/25s" duration="1/48000s" value="Beat 100 (32%)" />
+        <marker start="660/25s" duration="1/48000s" value="!Beat 101 (31% - Downbeat)" />
+        <marker start="1115/25s" duration="1/48000s" value="Beat 102 (31%)" />
+        <marker start="519/25s" duration="1/48000s" value="Beat 103 (30%)" />
+        <marker start="31/25s" duration="1/48000s" value="Beat 104 (30%)" />
+        <marker start="245/25s" duration="1/48000s" value="Beat 105 (28%)" />
+        <marker start="197/25s" duration="1/48000s" value="Beat 106 (27%)" />
+        <marker start="466/25s" duration="1/48000s" value="Beat 107 (27%)" />
+        <marker start="145/25s" duration="1/48000s" value="Beat 108 (27%)" />
+        <marker start="307/25s" duration="1/48000s" value="Beat 109 (26%)" />
+      </asset-clip>
+    </event>
+  </library>
+</fcpxml>
