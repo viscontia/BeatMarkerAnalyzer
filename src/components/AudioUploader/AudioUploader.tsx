@@ -11,7 +11,7 @@ import { fileAudioService } from '@/services/FileAudioService';
 import { AudioFileInfo, ValidationResult } from '@/types/audio';
 
 interface AudioUploaderProps {
-  onFileSelected: (file: File, fileInfo: AudioFileInfo) => void;
+  onFileSelected: (file: File, fileInfo: AudioFileInfo, originalPath?: string) => void;
   onError: (error: string) => void;
   isLoading?: boolean;
   className?: string;
@@ -33,14 +33,14 @@ export const AudioUploader: React.FC<AudioUploaderProps> = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   /**
-   * Gestisce la selezione del file (drag & drop o click)
+   * Gestisce la selezione del file con path opzionale (per Electron)
    */
-  const handleFileSelection = useCallback(async (file: File) => {
+  const handleFileSelectionWithPath = useCallback(async (file: File, originalPath?: string) => {
     setIsProcessing(true);
     setValidationResult(null);
 
     try {
-      console.log('🎵 Elaborazione file audio:', file.name);
+      console.log('🎵 Elaborazione file audio:', file.name, originalPath ? `(${originalPath})` : '');
 
       // Validazione file
       const validation = fileAudioService.validaFile(file);
@@ -55,7 +55,7 @@ export const AudioUploader: React.FC<AudioUploaderProps> = ({
       const fileInfo = await fileAudioService.estraiInformazioniAudio(file);
 
       console.log('✅ File caricato con successo:', fileInfo);
-      onFileSelected(file, fileInfo);
+      onFileSelected(file, fileInfo, originalPath);
 
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Errore durante il caricamento';
@@ -77,17 +77,35 @@ export const AudioUploader: React.FC<AudioUploaderProps> = ({
   }, [onFileSelected, onError]);
 
   /**
-   * Gestione eventi drag & drop
+   * Gestisce la selezione del file (drag & drop o click browser)
+   */
+  const handleFileSelection = useCallback(async (file: File) => {
+    await handleFileSelectionWithPath(file);
+  }, [handleFileSelectionWithPath]);
+
+  /**
+   * Gestione eventi drag & drop (disabilitato in Electron per garantire path originale)
    */
   const handleDragEnter = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
+
+    // In Electron, disabilita drag&drop per forzare l'uso del dialog
+    if (window.electronAPI) {
+      return;
+    }
+
     setIsDragActive(true);
   }, []);
 
   const handleDragLeave = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
+
+    // In Electron, non gestire drag&drop
+    if (window.electronAPI) {
+      return;
+    }
 
     // Solo se si sta uscendo dal componente principale
     if (!e.currentTarget.contains(e.relatedTarget as Node)) {
@@ -103,6 +121,13 @@ export const AudioUploader: React.FC<AudioUploaderProps> = ({
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
+
+    // In Electron, disabilita drag&drop per forzare l'uso del dialog
+    if (window.electronAPI) {
+      setIsDragActive(false);
+      return;
+    }
+
     setIsDragActive(false);
 
     const files = Array.from(e.dataTransfer.files);
@@ -112,13 +137,51 @@ export const AudioUploader: React.FC<AudioUploaderProps> = ({
   }, [handleFileSelection]);
 
   /**
+   * Gestione selezione file tramite Electron dialog
+   */
+  const handleElectronFileSelection = useCallback(async () => {
+    if (!window.electronAPI || isLoading || isProcessing) return;
+
+    try {
+      const result = await window.electronAPI.dialog.openFile();
+
+      if (!result.canceled && result.filePaths.length > 0) {
+        const originalPath = result.filePaths[0];
+
+        // Legge il file usando l'API Electron
+        const arrayBuffer = await window.electronAPI.file.readAudioFile(originalPath);
+        const fileName = originalPath.split('/').pop() || 'audio.wav';
+
+        // Determina il tipo MIME dal nome file
+        let mimeType = 'audio/wav';
+        if (fileName.toLowerCase().endsWith('.mp3')) {
+          mimeType = 'audio/mpeg';
+        }
+
+        const file = new File([arrayBuffer], fileName, {
+          type: mimeType
+        });
+
+        // Gestisce il file normalmente ma passa anche il path originale
+        await handleFileSelectionWithPath(file, originalPath);
+      }
+    } catch (error) {
+      console.error('❌ Errore selezione file Electron:', error);
+      onError('Errore durante la selezione del file');
+    }
+  }, [isLoading, isProcessing, onError]);
+
+  /**
    * Gestione click per selezione file
    */
   const handleClick = useCallback(() => {
-    if (fileInputRef.current && !isLoading && !isProcessing) {
+    // Se siamo in Electron, usa la dialog nativa
+    if (window.electronAPI) {
+      handleElectronFileSelection();
+    } else if (fileInputRef.current && !isLoading && !isProcessing) {
       fileInputRef.current.click();
     }
-  }, [isLoading, isProcessing]);
+  }, [isLoading, isProcessing, handleElectronFileSelection]);
 
   const handleFileInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -226,13 +289,18 @@ export const AudioUploader: React.FC<AudioUploaderProps> = ({
             {(dropzoneState === 'idle' || dropzoneState === 'active') && (
               <div className="space-y-1">
                 <p className="text-lg font-medium text-gray-700 dark:text-gray-300">
-                  {dropzoneState === 'active'
-                    ? 'Rilascia il file qui'
-                    : 'Trascina un file audio qui'
+                  {window.electronAPI
+                    ? 'Clicca per selezionare un file audio'
+                    : dropzoneState === 'active'
+                      ? 'Rilascia il file qui'
+                      : 'Trascina un file audio qui'
                   }
                 </p>
                 <p className="text-sm text-gray-500 dark:text-gray-400">
-                  oppure clicca per selezionare
+                  {window.electronAPI
+                    ? 'Necessario per garantire il salvataggio automatico FCPXML'
+                    : 'oppure clicca per selezionare'
+                  }
                 </p>
               </div>
             )}
@@ -241,7 +309,7 @@ export const AudioUploader: React.FC<AudioUploaderProps> = ({
           {/* Formati supportati */}
           {(dropzoneState === 'idle' || dropzoneState === 'active') && (
             <div className="text-xs text-gray-400 dark:text-gray-500">
-              Formati supportati: MP3, WAV • Dimensione massima: 50MB
+              Formati supportati: MP3, WAV • Dimensione massima: 100MB
             </div>
           )}
         </div>

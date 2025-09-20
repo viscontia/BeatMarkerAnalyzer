@@ -10,19 +10,21 @@ import { Music, Activity } from 'lucide-react';
 
 import AudioUploader from '@/components/AudioUploader';
 import AudioInfo from '@/components/AudioInfo';
-import BeatAnalyzer from '@/components/BeatAnalyzer';
+import CsvImporter from '@/components/CsvImporter';
 import ExportManager from '@/components/ExportManager';
+import WaveformVisualization from '@/components/WaveformVisualization';
 import ThemeToggle from '@/components/ThemeToggle';
 
 import { AudioFileInfo } from '@/types/audio';
-import { BeatDetectionResult, MarkerData } from '@/services/beatDetectionService';
+import { BeatDetectionResult, MarkerData } from '@/services/csvBeatService';
 
 // Fasi dell'applicazione
-type AppPhase = 'upload' | 'info' | 'analysis' | 'export';
+type AppPhase = 'upload' | 'info' | 'import' | 'export';
 
 interface AppState {
   phase: AppPhase;
   selectedFile: File | null;
+  originalFilePath: string | null;
   audioInfo: AudioFileInfo | null;
   beatResult: BeatDetectionResult | null;
   markers: MarkerData[] | null;
@@ -37,6 +39,7 @@ const useAppState = () => {
   const [state, setState] = useState<AppState>({
     phase: 'upload',
     selectedFile: null,
+    originalFilePath: null,
     audioInfo: null,
     beatResult: null,
     markers: null,
@@ -97,7 +100,7 @@ const AppBreadcrumb: React.FC<{ currentPhase: AppPhase }> = ({ currentPhase }) =
   const fasi = [
     { key: 'upload' as AppPhase, label: 'Caricamento', icon: Music },
     { key: 'info' as AppPhase, label: 'Informazioni', icon: Music },
-    { key: 'analysis' as AppPhase, label: 'Analisi Beat', icon: Activity },
+    { key: 'import' as AppPhase, label: 'Import CSV', icon: Activity },
     { key: 'export' as AppPhase, label: 'Esportazione', icon: Music }
   ];
 
@@ -141,7 +144,7 @@ const AppBreadcrumb: React.FC<{ currentPhase: AppPhase }> = ({ currentPhase }) =
  */
 const AppContent: React.FC<{
   state: AppState;
-  onFileSelected: (file: File, info: AudioFileInfo) => void;
+  onFileSelected: (file: File, info: AudioFileInfo, originalPath?: string) => void;
   onAnalysisComplete: (result: BeatDetectionResult, markers: MarkerData[]) => void;
   onBackToAnalysis: () => void;
   onStartNew: () => void;
@@ -190,7 +193,7 @@ const AppContent: React.FC<{
               </h3>
               <ul className="text-sm text-blue-700 dark:text-blue-400 space-y-1">
                 <li>• Formati: MP3, WAV</li>
-                <li>• Dimensione massima: 50MB</li>
+                <li>• Dimensione massima: 100MB</li>
                 <li>• Target: Solo desktop PC</li>
                 <li>• Output: FCPXML v1.10+ per Final Cut Pro</li>
               </ul>
@@ -217,25 +220,26 @@ const AppContent: React.FC<{
                 className="px-6 py-3 bg-primary-500 hover:bg-primary-600 text-white rounded-lg
                          font-medium transition-colors focus-ring"
               >
-                Inizia Analisi Beat
+                Continua all'Import CSV
               </motion.button>
             </div>
           </motion.div>
         )}
 
-        {/* Fase Analysis */}
-        {state.phase === 'analysis' && state.selectedFile && state.audioInfo && (
+        {/* Fase Import CSV */}
+        {state.phase === 'import' && state.selectedFile && state.audioInfo && (
           <motion.div
-            key="analysis"
+            key="import"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
           >
-            <BeatAnalyzer
+            <CsvImporter
               audioFile={state.selectedFile}
               audioInfo={state.audioInfo}
-              onAnalysisComplete={onAnalysisComplete}
+              onImportComplete={onAnalysisComplete}
               onError={onError}
+              onBackToUpload={onStartNew}
             />
           </motion.div>
         )}
@@ -247,9 +251,42 @@ const AppContent: React.FC<{
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
+            className="space-y-6"
+            onAnimationComplete={() => {
+              // Assicura che la waveform sia visibile dopo l'animazione
+              const waveformElement = document.querySelector('[data-waveform-container]');
+              if (waveformElement) {
+                waveformElement.scrollIntoView({
+                  behavior: 'smooth',
+                  block: 'start'
+                });
+              }
+            }}
           >
+            {/* Header sezione risultati */}
+            <div className="text-center mb-6">
+              <h2 className="text-2xl font-bold text-primary dark:text-primary mb-2">
+                Analisi Completata
+              </h2>
+              <p className="text-secondary dark:text-secondary">
+                Visualizza i risultati e esporta i marker per Final Cut Pro
+              </p>
+            </div>
+
+            {/* Waveform Visualization */}
+            <div data-waveform-container>
+              <WaveformVisualization
+                audioFile={state.selectedFile}
+                audioInfo={state.audioInfo}
+                beatResult={state.beatResult}
+                markers={state.markers}
+              />
+            </div>
+
+            {/* Export Manager */}
             <ExportManager
               audioFile={state.selectedFile}
+              originalFilePath={state.originalFilePath}
               audioInfo={state.audioInfo}
               beatResult={state.beatResult}
               markers={state.markers}
@@ -288,11 +325,12 @@ const App: React.FC = () => {
   /**
    * Gestisce la selezione del file audio
    */
-  const handleFileSelected = (file: File, audioInfo: AudioFileInfo) => {
-    console.log('📁 File selezionato:', file.name, audioInfo);
+  const handleFileSelected = (file: File, audioInfo: AudioFileInfo, originalPath?: string) => {
+    console.log('📁 File selezionato:', file.name, originalPath ? `(${originalPath})` : '', audioInfo);
 
     updateState({
       selectedFile: file,
+      originalFilePath: originalPath || null,
       audioInfo,
       phase: 'info',
       error: null
@@ -300,20 +338,20 @@ const App: React.FC = () => {
   };
 
   /**
-   * Gestisce il passaggio alla fase di analisi
+   * Gestisce il passaggio alla fase di import CSV
    */
   const handleContinueToAnalysis = () => {
     updateState({
-      phase: 'analysis',
+      phase: 'import',
       error: null
     });
   };
 
   /**
-   * Gestisce il completamento dell'analisi beat
+   * Gestisce il completamento dell'import CSV
    */
   const handleAnalysisComplete = (result: BeatDetectionResult, markers: MarkerData[]) => {
-    console.log('✅ Analisi completata:', { beats: result.beats.length, bpm: result.bpm });
+    console.log('✅ Import CSV completato:', { beats: result.beats.length, bpm: result.bpm });
 
     updateState({
       beatResult: result,
@@ -321,14 +359,22 @@ const App: React.FC = () => {
       phase: 'export',
       error: null
     });
+
+    // Scroll automatico al top per mostrare la waveform
+    setTimeout(() => {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    }, 100);
   };
 
   /**
-   * Gestisce il ritorno alla fase di analisi
+   * Gestisce il ritorno alla fase di import
    */
   const handleBackToAnalysis = () => {
     updateState({
-      phase: 'analysis',
+      phase: 'import',
       error: null
     });
   };
@@ -340,6 +386,7 @@ const App: React.FC = () => {
     updateState({
       phase: 'upload',
       selectedFile: null,
+      originalFilePath: null,
       audioInfo: null,
       beatResult: null,
       markers: null,

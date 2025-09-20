@@ -89,3 +89,20 @@ tmp/
 # Package manager lock files (keep only one)
 # package-lock.json  # Uncomment if using yarn
 # yarn.lock         # Uncomment if using npm
+
+# Audio files (examples only, too large for repo)
+*.wav
+*.mp3
+*.flac
+*.aac
+*.m4a
+*.ogg
+
+# Example files and temporary processing
+Example/*.wav
+Example/*.mp3
+temp/
+dist-electron/
+
+# Binary tools (platform specific)
+sonic-annotator*

@@ -20,12 +20,13 @@ import {
 } from 'lucide-react';
 
 import { AudioFileInfo } from '@/types/audio';
-import { BeatDetectionResult, MarkerData } from '@/services/beatDetectionService';
-import beatDetectionService from '@/services/beatDetectionService';
+import { BeatDetectionResult, MarkerData } from '@/services/csvBeatService';
+import csvBeatService from '@/services/csvBeatService';
 import fileAudioService from '@/services/FileAudioService';
 
 interface ExportManagerProps {
   audioFile: File;
+  originalFilePath: string | null;
   audioInfo: AudioFileInfo;
   beatResult: BeatDetectionResult;
   markers: MarkerData[];
@@ -34,6 +35,8 @@ interface ExportManagerProps {
 }
 
 const ExportManager: React.FC<ExportManagerProps> = ({
+  audioFile,
+  originalFilePath,
   audioInfo,
   beatResult,
   markers,
@@ -44,10 +47,11 @@ const ExportManager: React.FC<ExportManagerProps> = ({
   const [exportComplete, setExportComplete] = useState(false);
   const [showXMLPreview, setShowXMLPreview] = useState(false);
   const [copiedToClipboard, setCopiedToClipboard] = useState(false);
+  const [savedFilePath, setSavedFilePath] = useState<string | null>(null);
 
   // Genera XML FCPXML
   const fcpxmlContent = useMemo(() => {
-    return beatDetectionService.generateFCPXML(
+    return csvBeatService.generateFCPXML(
       markers,
       audioInfo.name,
       audioInfo.duration
@@ -87,32 +91,95 @@ const ExportManager: React.FC<ExportManagerProps> = ({
       // Simula tempo di generazione per UX
       await new Promise(resolve => setTimeout(resolve, 1000));
 
-      // Crea Blob con contenuto FCPXML
-      const blob = new Blob([fcpxmlContent], {
-        type: 'application/xml;charset=utf-8'
+      // Debug logging
+      console.log('🔍 Export debug:', {
+        hasElectronAPI: !!window.electronAPI,
+        originalFilePath,
+        audioFileName: audioInfo.name
       });
 
-      // Crea URL e trigger download
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = fcpxmlFileName;
+      // Se siamo in Electron e abbiamo il path originale, salva automaticamente nella stessa directory
+      if (window.electronAPI && originalFilePath) {
+        try {
+          // Salva automaticamente nella directory del file audio originale
+          const savedPath = await window.electronAPI.file.saveFcpxmlToAudioDir(
+            originalFilePath,
+            fcpxmlContent,
+            fcpxmlFileName
+          );
 
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-
-      // Cleanup URL
-      URL.revokeObjectURL(url);
-
-      setExportComplete(true);
-      console.log('✅ File FCPXML esportato:', fcpxmlFileName);
+          setExportComplete(true);
+          setSavedFilePath(savedPath);
+          console.log('✅ File FCPXML salvato automaticamente in:', savedPath);
+        } catch (electronError) {
+          console.error('❌ Errore salvataggio automatico:', electronError);
+          // Fallback al dialog di salvataggio
+          await fallbackElectronDialog();
+        }
+      } else if (window.electronAPI) {
+        // Se non abbiamo il path originale, usa il dialog
+        await fallbackElectronDialog();
+      } else {
+        // Fallback per browser normale
+        await fallbackBrowserDownload();
+      }
 
     } catch (error) {
       console.error('❌ Errore durante esportazione:', error);
     } finally {
       setIsExporting(false);
     }
+  };
+
+  /**
+   * Fallback per dialog Electron
+   */
+  const fallbackElectronDialog = async () => {
+    if (!window.electronAPI) return;
+
+    try {
+      // Mostra dialog per selezione directory
+      const result = await window.electronAPI.dialog.saveFile(fcpxmlFileName);
+
+      if (!result.canceled && result.filePath) {
+        // Salva il file usando l'API Electron
+        await window.electronAPI.file.saveFcpxml(result.filePath, fcpxmlContent);
+
+        setExportComplete(true);
+        setSavedFilePath(result.filePath);
+        console.log('✅ File FCPXML salvato in:', result.filePath);
+      }
+    } catch (error) {
+      console.error('❌ Errore dialog Electron:', error);
+      // Ultimo fallback al browser
+      await fallbackBrowserDownload();
+    }
+  };
+
+  /**
+   * Fallback per download tramite browser
+   */
+  const fallbackBrowserDownload = async () => {
+    // Crea Blob con contenuto FCPXML
+    const blob = new Blob([fcpxmlContent], {
+      type: 'application/xml;charset=utf-8'
+    });
+
+    // Crea URL e trigger download
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = fcpxmlFileName;
+
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    // Cleanup URL
+    URL.revokeObjectURL(url);
+
+    setExportComplete(true);
+    console.log('✅ File FCPXML esportato (browser):', fcpxmlFileName);
   };
 
   /**
@@ -280,11 +347,23 @@ const ExportManager: React.FC<ExportManagerProps> = ({
         </h4>
 
         <div className="text-sm text-blue-800 dark:text-blue-200 space-y-2">
-          <p><strong>1.</strong> Salva il file FCPXML nella stessa directory del file audio originale</p>
-          <p><strong>2.</strong> Apri Final Cut Pro e vai su <strong>File → Import → Media...</strong></p>
-          <p><strong>3.</strong> Seleziona il file FCPXML scaricato</p>
-          <p><strong>4.</strong> I marker beat appariranno automaticamente sulla timeline</p>
-          <p><strong>5.</strong> I down-beat saranno evidenziati in rosso, gli off-beat in verde</p>
+          {window.electronAPI && originalFilePath ? (
+            <>
+              <p><strong>1.</strong> Il file FCPXML verrà salvato automaticamente nella stessa directory del file audio</p>
+              <p><strong>2.</strong> Apri Final Cut Pro e vai su <strong>File → Import → XML</strong> usando File -- Import -- XML</p>
+              <p><strong>3.</strong> Seleziona il file FCPXML che troverai nella stessa cartella del file audio</p>
+              <p><strong>4.</strong> I marker beat appariranno automaticamente sulla timeline</p>
+              <p><strong>5.</strong> I down-beat saranno evidenziati in rosso</p>
+            </>
+          ) : (
+            <>
+              <p><strong>1.</strong> Seleziona una directory per salvare il file FCPXML (preferibilmente la stessa del file audio)</p>
+              <p><strong>2.</strong> Apri Final Cut Pro e vai su <strong>File → Import → XML</strong> usando File -- Import -- XML</p>
+              <p><strong>3.</strong> Seleziona il file FCPXML salvato</p>
+              <p><strong>4.</strong> I marker beat appariranno automaticamente sulla timeline</p>
+              <p><strong>5.</strong> I down-beat saranno evidenziati in rosso</p>
+            </>
+          )}
         </div>
 
         <div className="mt-4 flex items-center space-x-2 text-sm text-blue-700 dark:text-blue-300">
@@ -349,21 +428,42 @@ const ExportManager: React.FC<ExportManagerProps> = ({
         </div>
       </div>
 
-      {/* Messaggio successo */}
+      {/* Toast di successo */}
       <AnimatePresence>
         {exportComplete && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="mt-6 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg text-center"
+            className="mt-6 p-6 bg-green-50 dark:bg-green-900/20 border-2 border-green-300 dark:border-green-700 rounded-lg"
           >
-            <p className="text-green-800 dark:text-green-200 font-medium">
-              ✅ File FCPXML scaricato con successo!
-            </p>
-            <p className="text-sm text-green-600 dark:text-green-400 mt-1">
-              Puoi ora importarlo in Final Cut Pro per utilizzare i marker beat
-            </p>
+            <div className="flex items-start space-x-4">
+              <div className="flex-shrink-0">
+                <CheckCircle className="w-8 h-8 text-green-600 dark:text-green-400" />
+              </div>
+              <div className="flex-1">
+                <h4 className="text-lg font-semibold text-green-800 dark:text-green-200 mb-2">
+                  File FCPXML salvato con successo!
+                </h4>
+                {savedFilePath ? (
+                  <>
+                    <p className="text-green-700 dark:text-green-300 font-medium mb-1">
+                      📁 {fcpxmlFileName}
+                    </p>
+                    <p className="text-sm text-green-600 dark:text-green-400 font-mono bg-green-100 dark:bg-green-900/40 px-3 py-2 rounded break-all">
+                      {savedFilePath}
+                    </p>
+                  </>
+                ) : (
+                  <p className="text-green-700 dark:text-green-300">
+                    📁 {fcpxmlFileName}
+                  </p>
+                )}
+                <p className="text-sm text-green-600 dark:text-green-400 mt-3">
+                  ✨ Il file è stato salvato nella stessa directory del file audio e può essere importato direttamente in Final Cut Pro
+                </p>
+              </div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

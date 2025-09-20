@@ -127,7 +127,7 @@ export interface ValidationResult {
 }
 
 export interface FileValidationConstraints {
-  maxSize: number; // Bytes (50MB = 52428800)
+  maxSize: number; // Bytes (100MB = 104857600)
   supportedFormats: SupportedAudioFormat[];
   minDuration: number; // Secondi
   maxDuration: number; // Secondi
@@ -135,7 +135,7 @@ export interface FileValidationConstraints {
 
 // Default constraints
 export const DEFAULT_CONSTRAINTS: FileValidationConstraints = {
-  maxSize: 52428800, // 50MB
+  maxSize: 104857600, // 100MB
   supportedFormats: ['mp3', 'wav'],
   minDuration: 5, // 5 secondi minimo
   maxDuration: 1800 // 30 minuti massimo

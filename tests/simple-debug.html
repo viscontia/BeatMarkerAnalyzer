@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple BeatNet+ Test</title>
+    <style>
+        body { font-family: monospace; background: #000; color: #0f0; padding: 20px; }
+        button { background: #333; color: #0f0; border: 1px solid #0f0; padding: 10px; margin: 5px; }
+        .log { background: #001; border: 1px solid #333; padding: 10px; height: 300px; overflow-y: auto; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <h1>🎯 Simple BeatNet+ Test</h1>
+
+    <button onclick="testButton()">🧪 Test Button</button>
+    <button onclick="testFetch()">📁 Test Fetch</button>
+    <button onclick="testAudioContext()">🔊 Test AudioContext</button>
+
+    <div id="log" class="log"></div>
+
+    <script>
+        function log(msg) {
+            const logDiv = document.getElementById('log');
+            const time = new Date().toLocaleTimeString();
+            logDiv.innerHTML += `[${time}] ${msg}<br>`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+            console.log(msg);
+        }
+
+        function testButton() {
+            log('✅ Button click works!');
+        }
+
+        async function testFetch() {
+            try {
+                log('📁 Testing fetch...');
+                const response = await fetch('../Example/Ikoliks - Neon Nights.wav');
+                log(`📊 Response: ${response.status} ${response.statusText}`);
+                log(`📊 Size: ${response.headers.get('content-length')} bytes`);
+                log(`📊 Type: ${response.headers.get('content-type')}`);
+
+                if (response.ok) {
+                    log('✅ Fetch successful!');
+                } else {
+                    log('❌ Fetch failed!');
+                }
+            } catch (error) {
+                log(`❌ Fetch error: ${error.message}`);
+            }
+        }
+
+        async function testAudioContext() {
+            try {
+                log('🔊 Testing AudioContext...');
+                const audioContext = new AudioContext({ sampleRate: 44100 });
+                log(`✅ AudioContext created: ${audioContext.sampleRate} Hz`);
+
+                log('📁 Loading audio for decode test...');
+                const response = await fetch('../Example/Ikoliks - Neon Nights.wav');
+                const arrayBuffer = await response.arrayBuffer();
+                log(`📊 ArrayBuffer: ${arrayBuffer.byteLength} bytes`);
+
+                log('🔊 Decoding audio...');
+                const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+                log(`✅ Audio decoded: ${audioBuffer.duration.toFixed(2)}s, ${audioBuffer.sampleRate}Hz, ${audioBuffer.numberOfChannels}ch`);
+
+            } catch (error) {
+                log(`❌ AudioContext error: ${error.message}`);
+            }
+        }
+
+        log('🔧 Simple test loaded. Click buttons to test.');
+    </script>
+</body>
+</html>

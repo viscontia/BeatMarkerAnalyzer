@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE fcpxml>
+<fcpxml version="1.10">
+  <resources>
+    <format id="BMXRefTimelineFormat" name="FFVideoFormat1080p25" frameDuration="1000/25000s" width="1920" height="1080" colorSpace="1-1-1 (Rec. 709)" />
+    <asset id="ASSET_BMXRefBeatmarkedClip" name="Ikoliks - Neon Nights.wav" start="0/1s" duration="2868/25s" hasAudio="1" audioSources="1" audioRate="48000">
+      <media-rep kind="original-media" src="Ikoliks - Neon Nights.wav" />
+    </asset>
+  </resources>
+  <library>
+    <event name="Beat Analysis - Ikoliks - Neon Nights.wav">
+      <asset-clip ref="ASSET_BMXRefBeatmarkedClip" name="Ikoliks - Neon Nights.wav" duration="2868/25s" audioRole="music" format="BMXRefTimelineFormat">
+        <marker start="6/25s" duration="1/48000s" value="!Battuta 1 - 26 BPM 4/4 [Downbeat]" />
+        <marker start="63/25s" duration="1/48000s" value="!Battuta 2 - 26 BPM 4/4 [Downbeat]" />
+        <marker start="120/25s" duration="1/48000s" value="!Battuta 3 - 26 BPM 4/4 [Downbeat]" />
+        <marker start="177/25s" duration="1/48000s" value="!Battuta 4 - 26 BPM 4/4 [Downbeat]" />
+        <marker start="234/25s" duration="1/48000s" value="!Battuta 5 - 26 BPM 4/4 [Downbeat]" />
+        <marker start="291/25s" duration="1/48000s" value="!Battuta 6 - 26 BPM 4/4 [Downbeat]" />
+        <marker start="348/25s" duration="1/48000s" value="!Battuta 7 - 26 BPM 4/4 [Downbeat]" />
+        <marker start="405/25s" duration="1/48000s" value="!Battuta 8 - 26 BPM 4/4 [Downbeat]" />
+        <marker start="463/25s" duration="1/48000s" value="!Battuta 9 - 26 BPM 4/4 [Downbeat]" />
+        <marker start="520/25s" duration="1/48000s" value="!Battuta 10 - 26 BPM 4/4 [Downbeat]" />
+        <marker start="577/25s" duration="1/48000s" value="!Battuta 11 - 26 BPM 4/4 [Downbeat]" />
+        <marker start="634/25s" duration="1/48000s" value="!Battuta 12 - 26 BPM 4/4 [Downbeat]" />
+        <marker start="691/25s" duration="1/48000s" value="!Battuta 13 - 26 BPM 4/4 [Downbeat]" />
+        <marker start="748/25s" duration="1/48000s" value="!Battuta 14 - 26 BPM 4/4 [Downbeat]" />
+        <marker start="805/25s" duration="1/48000s" value="!Battuta 15 - 26 BPM 4/4 [Downbeat]" />
+        <marker start="863/25s" duration="1/48000s" value="!Battuta 16 - 26 BPM 4/4 [Downbeat]" />
+        <marker start="920/25s" duration="1/48000s" value="!Battuta 17 - 26 BPM 4/4 [Downbeat]" />
+        <marker start="977/25s" duration="1/48000s" value="!Battuta 18 - 26 BPM 4/4 [Downbeat]" />
+        <marker start="1034/25s" duration="1/48000s" value="!Battuta 19 - 26 BPM 4/4 [Downbeat]" />
+        <marker start="1091/25s" duration="1/48000s" value="!Battuta 20 - 26 BPM 4/4 [Downbeat]" />
+        <marker start="1148/25s" duration="1/48000s" value="!Battuta 21 - 26 BPM 4/4 [Downbeat]" />
+        <marker start="1205/25s" duration="1/48000s" value="!Battuta 22 - 26 BPM 4/4 [Downbeat]" />
+        <marker start="1263/25s" duration="1/48000s" value="!Battuta 23 - 26 BPM 4/4 [Downbeat]" />
+        <marker start="1320/25s" duration="1/48000s" value="!Battuta 24 - 26 BPM 4/4 [Downbeat]" />
+        <marker start="1377/25s" duration="1/48000s" value="!Battuta 25 - 26 BPM 4/4 [Downbeat]" />
+        <marker start="1434/25s" duration="1/48000s" value="!Battuta 26 - 26 BPM 4/4 [Downbeat]" />
+        <marker start="1491/25s" duration="1/48000s" value="!Battuta 27 - 26 BPM 4/4 [Downbeat]" />
+        <marker start="1548/25s" duration="1/48000s" value="!Battuta 28 - 26 BPM 4/4 [Downbeat]" />
+        <marker start="1606/25s" duration="1/48000s" value="!Battuta 29 - 26 BPM 4/4 [Downbeat]" />
+        <marker start="1663/25s" duration="1/48000s" value="!Battuta 30 - 26 BPM 4/4 [Downbeat]" />
+        <marker start="1720/25s" duration="1/48000s" value="!Battuta 31 - 26 BPM 4/4 [Downbeat]" />
+        <marker start="1777/25s" duration="1/48000s" value="!Battuta 32 - 26 BPM 4/4 [Downbeat]" />
+        <marker start="1834/25s" duration="1/48000s" value="!Battuta 33 - 26 BPM 4/4 [Downbeat]" />
+        <marker start="1891/25s" duration="1/48000s" value="!Battuta 34 - 26 BPM 4/4 [Downbeat]" />
+        <marker start="1948/25s" duration="1/48000s" value="!Battuta 35 - 26 BPM 4/4 [Downbeat]" />
+        <marker start="2006/25s" duration="1/48000s" value="!Battuta 36 - 26 BPM 4/4 [Downbeat]" />
+        <marker start="2063/25s" duration="1/48000s" value="!Battuta 37 - 26 BPM 4/4 [Downbeat]" />
+        <marker start="2120/25s" duration="1/48000s" value="!Battuta 38 - 26 BPM 4/4 [Downbeat]" />
+        <marker start="2177/25s" duration="1/48000s" value="!Battuta 39 - 26 BPM 4/4 [Downbeat]" />
+        <marker start="2234/25s" duration="1/48000s" value="!Battuta 40 - 26 BPM 4/4 [Downbeat]" />
+        <marker start="2291/25s" duration="1/48000s" value="!Battuta 41 - 26 BPM 4/4 [Downbeat]" />
+        <marker start="2348/25s" duration="1/48000s" value="!Battuta 42 - 26 BPM 4/4 [Downbeat]" />
+        <marker start="2406/25s" duration="1/48000s" value="!Battuta 43 - 26 BPM 4/4 [Downbeat]" />
+        <marker start="2462/25s" duration="1/48000s" value="!Battuta 44 - 26 BPM 4/4 [Downbeat]" />
+        <marker start="2520/25s" duration="1/48000s" value="!Battuta 45 - 26 BPM 4/4 [Downbeat]" />
+        <marker start="2577/25s" duration="1/48000s" value="!Battuta 46 - 26 BPM 4/4 [Downbeat]" />
+        <marker start="2634/25s" duration="1/48000s" value="!Battuta 47 - 26 BPM 4/4 [Downbeat]" />
+        <marker start="2691/25s" duration="1/48000s" value="!Battuta 48 - 26 BPM 4/4 [Downbeat]" />
+        <marker start="2748/25s" duration="1/48000s" value="!Battuta 49 - 26 BPM 4/4 [Downbeat]" />
+        <marker start="2806/25s" duration="1/48000s" value="!Battuta 50 - 26 BPM 4/4 [Downbeat]" />
+        <marker start="2862/25s" duration="1/48000s" value="!Battuta 51 - 26 BPM 4/4 [Downbeat]" />
+      </asset-clip>
+    </event>
+  </library>
+</fcpxml>

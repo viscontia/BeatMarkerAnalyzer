@@ -10,7 +10,7 @@ import { AudioFileInfo, SupportedAudioFormat, ValidationResult, DEFAULT_CONSTRAI
  */
 export class FileAudioService {
   private readonly SUPPORTED_FORMATS: SupportedAudioFormat[] = ['mp3', 'wav'];
-  private readonly MAX_FILE_SIZE = DEFAULT_CONSTRAINTS.maxSize; // 50MB
+  private readonly MAX_FILE_SIZE = DEFAULT_CONSTRAINTS.maxSize; // 100MB
 
   /**
    * Valida un file audio secondo le specifiche del progetto

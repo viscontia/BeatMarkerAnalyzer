@@ -5,6 +5,10 @@ import { resolve } from 'path'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
+  base: './',
+  server: {
+    port: 5173
+  },
   resolve: {
     alias: {
       '@': resolve(__dirname, './src'),
@@ -17,17 +21,27 @@ export default defineConfig({
     },
   },
   optimizeDeps: {
-    exclude: ['aubio']
+    exclude: ['aubio', 'essentia.js']
+  },
+  worker: {
+    format: 'es'
+  },
+  define: {
+    global: 'globalThis',
+    'process.env': {},
+    require: 'undefined'
   },
   build: {
     rollupOptions: {
       output: {
         manualChunks: {
           vendor: ['react', 'react-dom'],
-          ui: ['lucide-react', 'framer-motion'],
-          audio: ['aubio', 'wavesurfer.js']
+          ui: ['lucide-react', 'framer-motion']
         }
       }
+    },
+    commonjsOptions: {
+      transformMixedEsModules: true
     }
   }
 })

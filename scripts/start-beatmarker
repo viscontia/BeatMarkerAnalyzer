@@ -1,12 +1,13 @@
 #!/bin/bash
 
-# BeatMarkerAnalyzer - Script di avvio automatico
+# BeatMarkerAnalyzer - Script di avvio automatico (Electron)
 # Uso: start-beatmarker
 #
 # Funzioni:
 # 1. Kill processi attivi su porta 5173
-# 2. Avvio server di sviluppo
-# 3. (Build skippata per velocità)
+# 2. Verifica sonic-annotator e dipendenze
+# 3. Compila TypeScript per Electron
+# 4. Avvio applicazione desktop completa
 
 set -e  # Exit on error
 
@@ -79,9 +80,9 @@ kill_port_processes() {
     fi
 }
 
-# Funzione per avvio server di sviluppo
-start_dev_server() {
-    echo "🚀 Avvio server di sviluppo..."
+# Funzione per avvio applicazione Electron
+start_electron_app() {
+    echo "🚀 Avvio applicazione Electron..."
     cd "$PROJECT_DIR"
 
     # Controllo dipendenze
@@ -90,10 +91,38 @@ start_dev_server() {
         npm install
     fi
 
-    echo "🌐 Avvio npm run dev..."
+    # Verifica sonic-annotator
+    if [ ! -f "sonic-annotator" ]; then
+        echo -e "${YELLOW}⚠️  sonic-annotator non trovato nella directory del progetto${NC}"
+        echo "   L'analisi automatica potrebbe non funzionare"
+    else
+        echo -e "${GREEN}✅ sonic-annotator trovato${NC}"
+    fi
 
-    # Avvia server di sviluppo in foreground
-    exec npm run dev
+    # Compila TypeScript per Electron se necessario
+    if [ ! -f "dist-electron/main.js" ] || [ "electron/main.ts" -nt "dist-electron/main.js" ]; then
+        echo "🔧 Compilazione TypeScript per Electron..."
+        npx tsc -p electron/tsconfig.json
+    fi
+
+    echo "💻 Avvio app Electron (versione completa con sonic-annotator)..."
+
+    # Avvia Vite in background
+    npm run dev &
+    VITE_PID=$!
+
+    echo "⏳ Attendo che Vite sia pronto..."
+    sleep 3
+
+    # Verifica che Vite sia attivo
+    if ! curl -s http://localhost:5173 > /dev/null; then
+        echo "⏳ Vite ancora in caricamento, attendo altri 2 secondi..."
+        sleep 2
+    fi
+
+    echo "🚀 Avvio finestra Electron..."
+    # Avvia Electron direttamente
+    NODE_ENV=development npx electron dist-electron/main.js
 }
 
 # Funzione principale
@@ -104,24 +133,33 @@ main() {
     print_step "2" "Terminazione processi esistenti"
     kill_port_processes $PORT
 
-    print_step "3" "Avvio server di sviluppo"
+    print_step "3" "Avvio applicazione Electron"
     echo ""
     echo "================================================="
-    echo -e "${GREEN}🎉 Avvio BeatMarkerAnalyzer...${NC}"
+    echo -e "${GREEN}🎉 Avvio BeatMarkerAnalyzer (Electron)...${NC}"
     echo ""
-    echo -e "📱 URL Locale:    ${BLUE}http://localhost:$PORT${NC}"
+    echo -e "💻 Tipo:          ${BLUE}Applicazione desktop completa${NC}"
+    echo -e "🎵 Funzionalità:  ${BLUE}Analisi sonic-annotator inclusa${NC}"
     echo -e "📁 Directory:     ${BLUE}$PROJECT_DIR${NC}"
     echo -e "🛑 Per fermare:   ${YELLOW}Ctrl+C${NC}"
     echo ""
     echo "================================================="
 
-    start_dev_server
+    start_electron_app
 }
 
 # Gestione segnali per cleanup
 cleanup() {
-    echo -e "\n${YELLOW}🛑 Arresto del server...${NC}"
+    echo -e "\n${YELLOW}🛑 Arresto dell'applicazione...${NC}"
+
+    # Termina Vite se ancora attivo
+    if [ ! -z "$VITE_PID" ]; then
+        kill $VITE_PID 2>/dev/null || true
+    fi
+
+    # Termina processi sulla porta 5173
     kill_port_processes $PORT
+
     echo -e "${GREEN}✅ Cleanup completato${NC}"
     exit 0
 }
